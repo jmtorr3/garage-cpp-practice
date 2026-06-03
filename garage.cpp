@@ -206,8 +206,27 @@ int main()
 			std::cout << "Year: ";
 			std::cin >> year;
 
-			std::cout << "Fuel Type: ";
-			std::cin >> fuelType;
+			while (true) {
+				std::cout << "Fuel Type:\n";
+				std::cout << "1. Regular\n";
+				std::cout << "2. Premium\n";
+				int choice2;
+				std::cin >> choice2;
+				switch (choice2) {
+				case 1:
+					fuelType = "Regular";
+					break;
+
+				case 2:
+					fuelType = "Premium";
+					break;
+
+				default:
+					std::cout << "invalid choice";
+					break;
+				}
+				break;
+			}
 
 			std::cout << "Fuel Amount: ";
 			std::cin >> fuel;
