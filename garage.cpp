@@ -14,16 +14,18 @@ class Vehicle {
 	std::string fuelType;
 	double fuel;
 	double maxFuel;
+	double mpg;
 
     public:
 	Vehicle(std::string make, std::string model, int year, std::string fuelType, double fuel,
-		double maxFuel)
+		double maxFuel, double mpg)
 		: make(make)
 		, model(model)
 		, year(year)
 		, fuelType(fuelType)
 		, fuel(fuel)
 		, maxFuel(maxFuel)
+		, mpg(mpg)
 	{
 	}
 	// const inside the function means that it promises not to change the value passed in
@@ -51,6 +53,10 @@ class Vehicle {
 	{
 		this->maxFuel = maxFuel;
 	}
+	void setMpg(double mpg)
+	{
+		this->mpg = mpg;
+	}
 
 	// const next to a function means that the function promises not to modify the object
 	std::string getMake() const
@@ -77,6 +83,12 @@ class Vehicle {
 	{
 		return maxFuel;
 	}
+	void printBasicDesc() const
+	{
+		std::cout << year << ", " << make << ", " << model << ", Gas: " << fuel << "/"
+			  << maxFuel << ", mpg:" << mpg << std::endl;
+		std::cout << "--------\n";
+	}
 	virtual void printInfo() const
 	{
 		std::cout << "Make: " << make << std::endl;
@@ -85,6 +97,7 @@ class Vehicle {
 		std::cout << "Fuel Type: " << fuelType << std::endl;
 		std::cout << "Max Fuel: " << maxFuel << std::endl;
 		std::cout << "Fuel: " << fuel << std::endl;
+		std::cout << "MPG: " << mpg << std::endl;
 	}
 };
 
@@ -94,8 +107,8 @@ class Car : public Vehicle {
 
     public:
 	Car(std::string make, std::string model, int year, std::string fuelType, double fuel,
-	    double maxFuel, int doors)
-		: Vehicle(make, model, year, fuelType, fuel, maxFuel)
+	    double maxFuel, double mpg, int doors)
+		: Vehicle(make, model, year, fuelType, fuel, maxFuel, mpg)
 		, doors(doors)
 	{
 	}
@@ -126,8 +139,8 @@ class Plane : public Vehicle {
 
     public:
 	Plane(std::string make, std::string model, int year, std::string fuelType, double fuel,
-	      double maxFuel, int engines)
-		: Vehicle(make, model, year, fuelType, fuel, maxFuel)
+	      double maxFuel, double mpg, int engines)
+		: Vehicle(make, model, year, fuelType, fuel, maxFuel, mpg)
 
 		, engines(engines)
 	{
@@ -145,12 +158,19 @@ class Garage {
     public:
 	void addVehicle(std::unique_ptr<Vehicle> vehicle)
 	{
+		/* std::move means to treat this as an
+		 * object whose resources (heap allocated car object)
+		 * can be transferred elsewhere
+		 * so basically...
+		 * we're telling the compiler:
+		 * vehicle is giving up ownership of this object and transfering
+		 * to the vector vehicles[0]*/
 		vehicles.push_back(std::move(vehicle));
 	}
 	void printVehicles()
 	{
 		for (const auto &vehicle : vehicles) {
-			vehicle->printInfo();
+			vehicle->printBasicDesc();
 		}
 	}
 };
@@ -167,11 +187,12 @@ int main()
 		std::string fuelType;
 		double fuel;
 		double maxFuel;
+		double mpg;
 
 		std::cout << "1. Add Car\n";
 		std::cout << "2. Add Plane\n";
 		std::cout << "3. Print Garage\n";
-		std::cout << "Choice:";
+		std::cout << "Choice: ";
 		std::cin >> choice;
 
 		switch (choice) {
@@ -191,15 +212,26 @@ int main()
 			std::cout << "Fuel Amount: ";
 			std::cin >> fuel;
 
-			std::cout << "Max Fuel Amount: ";
-			std::cin >> maxFuel;
+			//keep on forgetting that do while loops are a thing lol
+			do {
+				std::cout << "Max Fuel Amount: ";
+				std::cin >> maxFuel;
+				if (maxFuel < fuel) {
+					std::cout
+						<< "Max fuel cannot be less than actual fuel amount"
+						<< std::endl;
+				}
+			} while (maxFuel < fuel);
+
+			std::cout << "MPG: ";
+			std::cin >> mpg;
 
 			int doors;
 			std::cout << "Number of doors: ";
 			std::cin >> doors;
 
 			garage.addVehicle(std::make_unique<Car>(make, model, year, fuelType, fuel,
-								maxFuel, doors));
+								maxFuel, mpg, doors));
 
 			break;
 		}
