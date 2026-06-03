@@ -175,6 +175,10 @@ class Garage {
 	}
 };
 
+void drive()
+{
+}
+
 int main()
 {
 	Garage garage;
@@ -192,6 +196,7 @@ int main()
 		std::cout << "1. Add Car\n";
 		std::cout << "2. Add Plane\n";
 		std::cout << "3. Print Garage\n";
+		std::cout << "4. Exit\n";
 		std::cout << "Choice: ";
 		std::cin >> choice;
 
@@ -223,7 +228,8 @@ int main()
 
 				default:
 					std::cout << "invalid choice";
-					break;
+					continue;
+					// goes back to switch statment
 				}
 				break;
 			}
@@ -256,7 +262,62 @@ int main()
 		}
 
 		case 2: {
-			garage.printVehicles();
+			std::cout << "Make: ";
+			std::cin >> make;
+
+			std::cout << "Model: ";
+			std::cin >> model;
+
+			std::cout << "Year: ";
+			std::cin >> year;
+
+			while (true) {
+				std::cout << "Fuel Type:\n";
+				std::cout << "1. Regular\n";
+				std::cout << "2. Premium\n";
+				int choice2;
+				std::cin >> choice2;
+				switch (choice2) {
+				case 1:
+					fuelType = "Regular";
+					break;
+
+				case 2:
+					fuelType = "Premium";
+					break;
+
+				default:
+					std::cout << "invalid choice";
+					continue;
+					// goes back to switch statment
+				}
+				break;
+			}
+
+			std::cout << "Fuel Amount: ";
+			std::cin >> fuel;
+
+			//keep on forgetting that do while loops are a thing lol
+			do {
+				std::cout << "Max Fuel Amount: ";
+				std::cin >> maxFuel;
+				if (maxFuel < fuel) {
+					std::cout
+						<< "Max fuel cannot be less than actual fuel amount"
+						<< std::endl;
+				}
+			} while (maxFuel < fuel);
+
+			std::cout << "MPG: ";
+			std::cin >> mpg;
+
+			int engines;
+			std::cout << "Number of engines: ";
+			std::cin >> engines;
+
+			garage.addVehicle(std::make_unique<Plane>(make, model, year, fuelType, fuel,
+								  maxFuel, mpg, engines));
+
 			break;
 		}
 		case 3: {
@@ -267,7 +328,10 @@ int main()
 			return 0;
 		}
 		default: {
+			std::cout << "!-----------!" << std::endl;
 			std::cout << "Invalid input" << std::endl;
+			std::cout << "!-----------!" << std::endl;
+			continue;
 		}
 		}
 	}
